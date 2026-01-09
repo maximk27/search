@@ -51,22 +51,47 @@ add_library(
 )
 
 #packages
+include(FetchContent)
 
 ## spdlog
-target_link_libraries(
-  ${PROJECT_NAME}
-  PRIVATE
-  spdlog::spdlog
-)
 
 ## gtest
-include(FetchContent)
 FetchContent_Declare(
   googletest
   URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
   DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 FetchContent_MakeAvailable(googletest)
+
+## pugixml
+FetchContent_Declare(
+  pugixml
+  GIT_REPOSITORY https://github.com/zeux/pugixml.git
+  GIT_TAG master
+  DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
+FetchContent_MakeAvailable(pugixml)
+
+
+## cxxopts
+FetchContent_Declare(
+  cxxopts
+  GIT_REPOSITORY https://github.com/jarro2783/cxxopts.git
+  GIT_TAG master
+  DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
+FetchContent_MakeAvailable(cxxopts)
+
+
+
+# link step
+target_link_libraries(
+  ${PROJECT_NAME}
+  PRIVATE
+  spdlog::spdlog
+  gtest
+  pugixml::pugixml
+)
 
 # executable
 add_executable(
@@ -75,7 +100,9 @@ add_executable(
 )
 target_link_libraries(
   cli
+  PRIVATE
   ${PROJECT_NAME}
+  cxxopts
 )
 
 # tests

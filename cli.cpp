@@ -1,4 +1,5 @@
-#include "src/a.h"
+#include <iostream>
+
 int main() {
-    say_a();
+    printf("hello world\n");
 }
