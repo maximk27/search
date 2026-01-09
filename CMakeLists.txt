@@ -41,10 +41,51 @@ else()
   add_compile_definitions(DEBUG)
 endif()
 
+find_package(spdlog REQUIRED)
 
+# library
 file(GLOB_RECURSE SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp")
-add_executable(
+add_library(
   ${PROJECT_NAME}
-  cli.cpp
   ${SOURCES}
 )
+
+#packages
+
+## spdlog
+target_link_libraries(
+  ${PROJECT_NAME}
+  PRIVATE
+  spdlog::spdlog
+)
+
+## gtest
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+  DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
+FetchContent_MakeAvailable(googletest)
+
+# executable
+add_executable(
+  cli
+  cli.cpp
+)
+target_link_libraries(
+  cli
+  ${PROJECT_NAME}
+)
+
+# tests
+enable_testing()
+include(GoogleTest)
+
+file(GLOB tests ${PROJECT_SOURCE_DIR}/tests/*.cpp)
+foreach(test IN LISTS tests)
+  get_filename_component(name ${test} NAME_WE)
+  add_executable(${name} ${test})
+  target_link_libraries(${name} PRIVATE ${PROJECT_NAME} GTest::gtest_main)
+  gtest_discover_tests(${name})
+endforeach()

@@ -1,6 +1,7 @@
 #include "a.h"
 #include <iostream>
+#include <spdlog/spdlog.h>
 
 void say_a() {
-    printf("hello a\n");
+    spdlog::info("hello a");
 }
