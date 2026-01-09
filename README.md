@@ -1,6 +1,11 @@
 ###  Search
 
-Exploring search algorithms 
+A small website searcher over a subset of Wikipedia pages
+
+> [!NOTE]
+> I am focusing on the algorithms used in search, not necessarily the problem of extreme scale, 
+so I will assume the site data is small enough for it to live entirely in memory. 
+This is an interesting problem however and I implement this in the future.
 
 ### Notes
 Subset of Wikipedia [dataset](https://dumps.wikimedia.org/enwiki/20251220/)
