@@ -6,6 +6,10 @@ Exploring search algorithms
 Subset of Wikipedia [dataset](https://dumps.wikimedia.org/enwiki/20251220/)
 > specifically enwiki-20251220-pages-meta-current1.xml-p1p41242.bz2 299.8 MB
 
+Documentation for [dumps](https://en.wikipedia.org/wiki/Wikipedia:Database_download#Database_schema)
+
+Schema [docs](https://www.mediawiki.org/wiki/Help:Export#Export_format)
+
 ### Packages
 - logging [spdlog](https://github.com/gabime/spdlog)
 - test framework [gtest](https://google.github.io/googletest/)

@@ -3,7 +3,7 @@
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
-        printf("Error: usage ./cli [path]");
+        printf("Error: usage ./generate [path]");
         return 1;
     }
     std::string path = argv[1];

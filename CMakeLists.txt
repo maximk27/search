@@ -87,23 +87,21 @@ FetchContent_MakeAvailable(cxxopts)
 # link step
 target_link_libraries(
   ${PROJECT_NAME}
-  PRIVATE
+  PUBLIC
   spdlog::spdlog
   gtest
   pugixml::pugixml
 )
 
 # executable
-add_executable(
-  cli
-  cli.cpp
-)
-target_link_libraries(
-  cli
-  PRIVATE
-  ${PROJECT_NAME}
-  cxxopts
-)
+## cli
+add_executable(cli cli.cpp)
+target_link_libraries(cli PRIVATE ${PROJECT_NAME})
+
+## generate
+add_executable(generate generate.cpp)
+target_link_libraries(generate PRIVATE ${PROJECT_NAME})
+
 
 # tests
 enable_testing()
