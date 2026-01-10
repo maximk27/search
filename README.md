@@ -15,11 +15,24 @@ Documentation for [dumps](https://en.wikipedia.org/wiki/Wikipedia:Database_downl
 
 Schema [docs](https://www.mediawiki.org/wiki/Help:Export#Export_format)
 
+Example wikipedia [article](https://en.wikipedia.org/wiki/Anarchism)
+
+Wikipedia xml rules
+- page url is defined by redirect element if it exists, otherwise by title
+- page url \<space\> -> "_"
+- internal linkes are of the form \[\[LINK]] with \[\[link | text]] where text is displayed
+- files are of form \[\[file:name | text]]
+
+Extra rules we will ignore:
+- templates are of form \{\{type : parameters}} <- could be links
+- external url is of form \[link]
+
 ### Packages
 - logging [spdlog](https://github.com/gabime/spdlog)
 - test framework [gtest](https://google.github.io/googletest/)
 - xml parser [pugixml](https://github.com/zeux/pugixml)
 - opt handler [cxxopts](https://github.com/jarro2783/cxxopts)
+- regex [boost](https://www.boost.org/)
 
 ### Todo
 - Parse wikipedia data graph

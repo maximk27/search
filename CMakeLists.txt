@@ -54,6 +54,7 @@ add_library(
 include(FetchContent)
 
 ## spdlog
+find_package(spdlog REQUIRED)
 
 ## gtest
 FetchContent_Declare(
@@ -82,6 +83,9 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(cxxopts)
 
+## boost regex
+find_package(Boost REQUIRED COMPONENTS regex)
+
 
 
 # link step
@@ -91,6 +95,7 @@ target_link_libraries(
   spdlog::spdlog
   gtest
   pugixml::pugixml
+  Boost::regex
 )
 
 # executable
