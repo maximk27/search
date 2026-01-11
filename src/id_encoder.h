@@ -12,13 +12,16 @@
 template <typename T>
 class IdEncoder {
 public:
-    // get an unique id
-    int64_t get_id(const T &val);
+    // sets id, requires not already registered
+    void set_id(const T &val);
 
+    // tries to get id, nullopt if not registered
+    std::optional<int64_t> get_id(const T &val);
+
+    // requires that data is registered
     const T &get_data(int64_t id);
 
-    bool contains(const T &val) const;
-
+    // size
     int64_t size() const;
 
 private:

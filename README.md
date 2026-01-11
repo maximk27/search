@@ -29,6 +29,17 @@ Extra rules we will ignore:
 - templates are of form \{\{type : parameters}} <- could be links
 - external url is of form \[link]
 
+### Decisions
+
+#### Link Filtering
+We can only use a subset of wikipedia pages for testing, so pages will have outgoing links to 
+pages that may not be part of the processed data set. 
+
+For page ranking, we should not count these. Instead, we first mark all pages of interest
+ahead of time and only afterwards parse all links, keeping only those that have been marked
+
+
+
 ### Packages
 - logging [spdlog](https://github.com/gabime/spdlog)
 - test framework [gtest](https://google.github.io/googletest/)

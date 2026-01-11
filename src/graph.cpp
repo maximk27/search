@@ -1,11 +1,15 @@
-#include "page.h"
+#include "graph.h"
+#include "id_encoder.h"
+#include <cassert>
 #include <sstream>
 #include <utility>
 #include <boost/regex.hpp>
 #include <spdlog/spdlog.h>
+#include <pugixml.hpp>
 
 using namespace pugi;
 using namespace boost;
+
 // ---------------------------------- helpers ----------------------------------
 
 // according to xml links in notes
@@ -34,13 +38,16 @@ std::pair<std::string, std::string> parse_page_node(const xml_node &node) {
 // returns out links
 // according to xml links in notes
 std::vector<int64_t> parse_page_text(IdEncoder<std::string> &encoder,
-                                     const std::string text) {
+                                     const std::string &text) {
     // catch all of form [[(link)|(text)]]
     // where |(text) is optional
     static const regex re_links(R"(\[\[([^\[\]\|]+)\|?[^\[\]\|]*\]\])");
 
     // matches namespaced links
     static const regex re_namespace(R"([a-zA-Z]+\:)");
+
+    // ids of pages for out links
+    std::vector<int64_t> out_links;
 
     // for text that matches expression
     sregex_iterator it(text.begin(), text.end(), re_links);
@@ -49,9 +56,9 @@ std::vector<int64_t> parse_page_text(IdEncoder<std::string> &encoder,
         const boost::smatch &match = *it;
         auto url_match = match[1];
 
-        // is a namespace link
+        // skip a namespace links
         if (regex_search(url_match.begin(), url_match.end(), re_namespace)) {
-            spdlog::warn("skip s={}", url_match.str());
+            spdlog::debug("skip namespace s={}", url_match.str());
             continue;
         }
 
@@ -63,21 +70,71 @@ std::vector<int64_t> parse_page_text(IdEncoder<std::string> &encoder,
         std::string url_name(url_match.begin(),
                              std::min(tag_it, url_match.end()));
 
-        spdlog::info("url_name={}", url_name);
+        auto link_id = encoder.get_id(url_name);
+        // not known link
+        if (!link_id) {
+            spdlog::debug("skip not known s={}", url_match.str());
+            continue;
+        }
+
+        spdlog::info("keeping_name={}", url_name);
+        out_links.push_back(*link_id);
     }
 
-    std::vector<int64_t> res;
-    return res;
+    return out_links;
 }
 
 // ---------------------------------- public ----------------------------------
+std::optional<Graph> Graph::create(const std::string &path, size_t n) {
+    xml_document input;
+    xml_parse_result res = input.load_file(path.data());
+    if (!res) {
+        spdlog::error("Error reading file: {}", res.description());
+        return std::nullopt;
+    }
+    return Graph(input, n);
+}
 
-Page::Page(IdEncoder<std::string> &encoder, const xml_node &node) {
-    auto [page_name, page_text] = parse_page_node(node);
+double Graph::avg_outdeg() const {
+    long double total = 0;
+    for (size_t i = 0; i < m_adjlist.size(); i++) {
+        spdlog::debug("size={}", m_adjlist[i].size());
+        total += m_adjlist[i].size();
+    }
+    return total / m_adjlist.size();
+}
 
-    // get page id
-    page_id = encoder.get_id(page_name);
+// ---------------------------------- private ----------------------------------
+Graph::Graph(pugi::xml_document &doc, size_t n) {
+    xml_node first = doc.child("mediawiki");
 
-    // parse page text for outgoing links
-    out_links = parse_page_text(encoder, page_text);
+    m_texts.reserve(n);
+
+    size_t count = 0;
+    for (xml_node node : first.children("page")) {
+        // hit max
+        if (count == n)
+            break;
+
+        auto [page_name, page_text] = parse_page_node(node);
+        spdlog::info("known name={}", page_name);
+
+        // register this page on this idx
+        m_ids.get_id(page_name);
+
+        // add this entries data
+        m_texts.emplace_back(std::move(page_text));
+
+        // track count
+        count++;
+    }
+
+    m_adjlist.reserve(n);
+    for (size_t page = 0; page < count; page++) {
+        // parse links in this pages text
+        std::vector<int64_t> out_links = parse_page_text(m_ids, m_texts[page]);
+
+        // push to dsa
+        m_adjlist.emplace_back(std::move(out_links));
+    }
 }

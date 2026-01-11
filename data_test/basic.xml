@@ -1,0 +1,16 @@
+<mediawiki xml:lang="en">
+    <page>
+        <title>Page title</title>
+        <revision>
+        <text>
+        [[case1]]
+        [[case2|stuff]]
+        [[image:exclude1]]
+        [[file:exclude2|stuff]]
+        [[case3#stuff is here|stuff]]
+        </text>
+        </revision>
+    </page>
+</mediawiki>
+
+
