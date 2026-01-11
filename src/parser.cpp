@@ -15,9 +15,13 @@ void parse(const std::string &path) {
     xml_node mediawiki_in = input.child("mediawiki");
     IdEncoder<std::string> id_encoder;
 
+    size_t i = 0;
     // iterate over all pages
     for (xml_node node : mediawiki_in.children("page")) {
         Page page(id_encoder, node);
+        if (i == 5)
+            break;
+        i++;
     }
 
     // write the full data set to file as well

@@ -1,9 +1,11 @@
 #include "page.h"
 #include <sstream>
 #include <utility>
-#include <boost/regex.h>
+#include <boost/regex.hpp>
+#include <spdlog/spdlog.h>
 
 using namespace pugi;
+using namespace boost;
 // ---------------------------------- helpers ----------------------------------
 
 // according to xml links in notes
@@ -33,6 +35,39 @@ std::pair<std::string, std::string> parse_page_node(const xml_node &node) {
 // according to xml links in notes
 std::vector<int64_t> parse_page_text(IdEncoder<std::string> &encoder,
                                      const std::string text) {
+    // catch all of form [[(link)|(text)]]
+    // where |(text) is optional
+    static const regex re_links(R"(\[\[([^\[\]\|]+)\|?[^\[\]\|]*\]\])");
+
+    // matches namespaced links
+    static const regex re_namespace(R"([a-zA-Z]+\:)");
+
+    // for text that matches expression
+    sregex_iterator it(text.begin(), text.end(), re_links);
+    sregex_iterator end;
+    for (; it != end; it++) {
+        const boost::smatch &match = *it;
+        auto url_match = match[1];
+
+        // is a namespace link
+        if (regex_search(url_match.begin(), url_match.end(), re_namespace)) {
+            spdlog::warn("skip s={}", url_match.str());
+            continue;
+        }
+
+        // cut off the #section portion
+        auto tag_it = std::find(url_match.begin(), url_match.end(), '#');
+
+        // if tag_it == end, then we take full
+        // else we take up to excluding tag_it
+        std::string url_name(url_match.begin(),
+                             std::min(tag_it, url_match.end()));
+
+        spdlog::info("url_name={}", url_name);
+    }
+
+    std::vector<int64_t> res;
+    return res;
 }
 
 // ---------------------------------- public ----------------------------------

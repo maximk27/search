@@ -21,6 +21,8 @@ Wikipedia xml rules
 - page url is defined by redirect element if it exists, otherwise by title
 - page url \<space\> -> "_"
 - internal linkes are of the form \[\[LINK]] with \[\[link | text]] where text is displayed
+- links may be of the form \[\[namespace:link]] as well, we will ignore namespaced links
+- links may also have \[\[link\#section]] and for book keeping we will ignore section
 - files are of form \[\[file:name | text]]
 
 Extra rules we will ignore:
