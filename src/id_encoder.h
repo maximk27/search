@@ -1,5 +1,6 @@
 #pragma once
 
+#include "gtest/gtest.h"
 #include <cassert>
 #include <cstdint>
 #include <stdexcept>
@@ -12,27 +13,13 @@ template <typename T>
 class IdEncoder {
 public:
     // get an unique id
-    int64_t get_id(const T &val) {
-        auto it = m_to_id.find(val);
-        // exists, so return it
-        if (it != m_to_id.end()) {
-            return it->second;
-        }
+    int64_t get_id(const T &val);
 
-        // create for first time
-        int64_t id = m_to_id.size();
+    const T &get_data(int64_t id);
 
-        // both ways
-        m_to_data.emplace(id, val);
-        m_to_id.emplace(val, id);
+    bool contains(const T &val) const;
 
-        return id;
-    }
-
-    const T &get_data(int64_t id) {
-        // requires that this entry exists
-        return m_to_data.at(id);
-    }
+    int64_t size() const;
 
 private:
     // data -> id
@@ -41,3 +28,5 @@ private:
     // id -> data
     std::unordered_map<int64_t, T> m_to_data;
 };
+
+#include "id_encoder.inl"
