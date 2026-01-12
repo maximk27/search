@@ -12,8 +12,9 @@
 template <typename T>
 class IdEncoder {
 public:
-    // sets id, requires not already registered
-    void set_id(const T &val);
+    // sets id
+    // returns whether set suceeded (whether val not contained before)
+    bool set_id(const T &val);
 
     // tries to get id, nullopt if not registered
     std::optional<int64_t> get_id(const T &val);

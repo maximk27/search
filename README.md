@@ -31,14 +31,16 @@ Extra rules we will ignore:
 
 ### Decisions
 
-#### Link Filtering
+#### Link Filtering 
 We can only use a subset of wikipedia pages for testing, so pages will have outgoing links to 
 pages that may not be part of the processed data set. 
 
 For page ranking, we should not count these. Instead, we first mark all pages of interest
 ahead of time and only afterwards parse all links, keeping only those that have been marked
 
+We also will filter all namespaced links like "Talk:page", which is a discussion board
 
+We also do not discriminate case and turn space->"_"
 
 ### Packages
 - logging [spdlog](https://github.com/gabime/spdlog)
@@ -48,8 +50,11 @@ ahead of time and only afterwards parse all links, keeping only those that have 
 - regex [boost](https://www.boost.org/)
 
 ### Todo
+- Handle non ascii chars
 - Parse wikipedia data graph
 - Basic cli
-- Web crawler (optional)
-- Frontend
 - Page ranking
+
+### Extra Ideas
+- Web crawler 
+- Web Frontend, RPC backend

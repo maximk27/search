@@ -1,14 +1,14 @@
 #pragma once
 #include "id_encoder.h"
+#include <spdlog/spdlog.h>
 
 template <typename T>
-void IdEncoder<T>::set_id(const T &val) {
+bool IdEncoder<T>::set_id(const T &val) {
     auto it = m_to_id.find(val);
 
     // already set
-    if (it != m_to_id.end()) {
-        throw new std::runtime_error("double set");
-    }
+    if (it != m_to_id.end())
+        return false;
 
     // create for first time
     int64_t id = m_to_id.size();
@@ -16,25 +16,20 @@ void IdEncoder<T>::set_id(const T &val) {
     // both ways
     m_to_data.emplace(id, val);
     m_to_id.emplace(val, id);
+
+    return true;
 }
 
 template <typename T>
 std::optional<int64_t> IdEncoder<T>::get_id(const T &val) {
     auto it = m_to_id.find(val);
-    // exists, so return it
     if (it != m_to_id.end()) {
+        // exists, so return it
         return it->second;
+    } else {
+        // otherwise nullopt
+        return std::nullopt;
     }
-    return std::nullopt;
-
-    // create for first time
-    int64_t id = m_to_id.size();
-
-    // both ways
-    m_to_data.emplace(id, val);
-    m_to_id.emplace(val, id);
-
-    return id;
 }
 
 template <typename T>

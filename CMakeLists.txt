@@ -102,10 +102,6 @@ target_link_libraries(
 add_executable(cli cli.cpp)
 target_link_libraries(cli PRIVATE ${PROJECT_NAME})
 
-## generate
-add_executable(generate generate.cpp)
-target_link_libraries(generate PRIVATE ${PROJECT_NAME})
-
 
 # tests
 enable_testing()
