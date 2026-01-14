@@ -6,7 +6,7 @@
 #include <vector>
 #include <pugixml.hpp>
 
-#include "docs.h"
+#include "api/docs.h"
 #include "id_encoder.h"
 
 class Graph {

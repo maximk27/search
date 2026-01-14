@@ -101,12 +101,12 @@ XMLDocs::XMLDocs(pugi::xml_document &doc, size_t n,
         auto [page_name, page_text] = *it;
         spdlog::info("keeping page=[{}]", page_name);
 
-        // register this page on this idx
-        bool was_set = encoder.set_id(page_name);
-
         // already exists, so skip
-        if (!was_set)
+        if (encoder.contains(page_name))
             continue;
+
+        // register this page on this idx
+        encoder.encode(page_name);
 
         // add this entries data
         m_texts.emplace_back(std::move(page_text));

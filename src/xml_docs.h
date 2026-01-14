@@ -5,7 +5,7 @@
 #include <string>
 #include <cstdint>
 #include "id_encoder.h"
-#include "docs.h"
+#include "api/docs.h"
 
 class XMLDocs : public Docs {
 public:
@@ -21,6 +21,7 @@ public:
     void for_each(std::function<bool(int64_t id, std::string_view text)> fn)
         const override;
 
+    // size
     size_t size() const override;
 
 private:

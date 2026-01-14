@@ -46,15 +46,16 @@ std::vector<int64_t> parse_page_text(IdEncoder<std::string> &encoder,
         // modify url_name: control name
         control_name(url_name);
 
-        auto link_id = encoder.get_id(url_name);
         // not known link
-        if (!link_id) {
+        if (!encoder.contains(url_name)) {
             spdlog::debug("skip not known s=[{}]", url_name);
             continue;
         }
 
+        int64_t link_id = encoder.encode(url_name);
+
         spdlog::info("keeping_name={}", url_name);
-        out_links.push_back(*link_id);
+        out_links.push_back(link_id);
     }
 
     return out_links;

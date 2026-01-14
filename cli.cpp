@@ -1,12 +1,12 @@
 #include <spdlog/spdlog.h>
-#include "src/docs.h"
+#include "src/api/docs.h"
 #include "src/graph.h"
 #include "src/xml_docs.h"
 #include <iostream>
 
 int main(int argc, char *argv[]) {
     if (argc < 3) {
-        printf("Error: usage ./cli [path] [count]");
+        printf("Error: usage %s [path] [count]\n", argv[0]);
         return 1;
     }
 

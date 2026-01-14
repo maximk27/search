@@ -1,7 +1,6 @@
 #pragma once
-#include "id_encoder.h"
 #include <cstdint>
-#include <string>
+#include <functional>
 #include <string_view>
 
 // api for doc collection
@@ -16,5 +15,6 @@ public:
     virtual void for_each(
         std::function<bool(int64_t id, std::string_view text)> fn) const = 0;
 
+    // size
     virtual size_t size() const = 0;
 };
