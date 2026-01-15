@@ -1,0 +1,65 @@
+<mediawiki xml:lang="en">
+    <page>
+        <title>page1</title>
+        <revision>
+            <text>
+            [[case1]]
+            [[case2|stuff]]
+            [[image:exclude1]]
+            [[file:exclude2|stuff]]
+            [[case3#stuff is here|stuff]]
+            </text>
+        </revision>
+    </page>
+
+    <page>
+        <title>case1</title>
+        <revision>
+            <text>
+            [[case1]]
+            [[case2|stuff]]
+            [[image:exclude1]]
+            [[file:exclude2|stuff]]
+            [[case3#stuff is here|stuff]]
+            </text>
+        </revision>
+    </page>
+    <page>
+        <title>case2</title>
+        <revision>
+            <text>
+            [[case1]]
+            [[case2|stuff]]
+            [[image:exclude1]]
+            [[file:exclude2|stuff]]
+            [[case3#stuff is here|stuff]]
+            </text>
+        </revision>
+    </page>
+    <page>
+        <title>case3</title>
+        <revision>
+            <text>
+            [[case1]]
+            [[case2|stuff]]
+            [[image:exclude1]]
+            [[file:exclude2|stuff]]
+            [[case3#stuff is here|stuff]]
+            </text>
+        </revision>
+    </page>
+    <page>
+        <title>talk: exclude</title>
+        <revision>
+            <text>
+            [[case1]]
+            [[case2|stuff]]
+            [[image:exclude1]]
+            [[file:exclude2|stuff]]
+            [[case3#stuff is here|stuff]]
+            </text>
+        </revision>
+    </page>
+</mediawiki>
+
+
