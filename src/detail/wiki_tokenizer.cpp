@@ -78,29 +78,26 @@ Delimiter check_delimiter(std::string_view view) {
             }
             break;
         }
-        case '&': {
+        case '<': {
             // <tag> or </tag>
-            std::string_view tag_start(it, std::min(it + 3, view.end()));
+            static constexpr std::string_view close_pre = "</";
 
-            // neither open nor close
-            if (!tag_start.starts_with("&gt")) {
-                break;
-            }
+            // check next2
+            std::string_view next{it,
+                                  std::min(it + close_pre.size(), view.end())};
+            is_closing = next == close_pre;
 
-            // closing if </, else opening <
-            is_closing = tag_start == "&gt/";
+            // until closing this delimiter
+            while (it != view.end() && *it != '>')
+                it++;
 
-            while (it < view.end()) {
-                std::string_view symbol(it, std::min(it + 3, view.end()));
-                if (symbol == "&lt") {
-                    // jump to end of delimiter
-                    it += 4;
-                    break;
-                }
-            }
-
-            // should not be breaking out for this reason
+            // shouldnt end because of this
             assert(it != view.end());
+
+            // include the >
+            it++;
+
+            type = WikiTokenType::Tag;
             break;
         }
         case '[':

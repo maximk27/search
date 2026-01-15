@@ -36,12 +36,16 @@ mkdir build && cd build
 cmake .. -DBuild=R
 make -j8
 ```
-
 Ensure the dataset is installed, checkout wikipedia's xml [data](https://dumps.wikimedia.org/)
 
-To run cli
+To run cli (assuming in build/)
 ```
 ./bin/cli [path_to_xml] [num_pages_to_process]
+```
+
+To run test suite (assuming in build/)
+```bash
+ctest
 ```
 
 

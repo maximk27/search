@@ -7,12 +7,10 @@
 #include "../src/detail/wiki_tokenizer.h"
 #include "../src/detail/wiki_token.h"
 
-TEST(tokenizer, wiki) {
-    std::string path = "../data_test/tokenizer_basic.xml";
+void test(std::string path) {
     size_t count = 1000;
 
     IdEncoder<std::string> doc_encoder;
-    spdlog::set_level(spdlog::level::debug);
 
     IdEncoder<std::string> encoder;
     auto docs = XMLDocs::create(path, count, doc_encoder);
@@ -27,4 +25,16 @@ TEST(tokenizer, wiki) {
         spdlog::info("type=[{}], content=[{}]", to_string(token.type),
                      token.text());
     });
+}
+
+TEST(tokenizer, basic) {
+    spdlog::set_level(spdlog::level::debug);
+    std::string path = "../data_test/tokenizer_basic.xml";
+    test(path);
+}
+
+TEST(tokenizer, nested) {
+    spdlog::set_level(spdlog::level::debug);
+    std::string path = "../data_test/tokenizer_nested.xml";
+    test(path);
 }

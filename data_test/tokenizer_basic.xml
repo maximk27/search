@@ -9,7 +9,7 @@
         ''italic''
         [[link]]
         {{template}}
-
+        &lt;poem&gt; poem inside &lt;/poem&gt;
         </text>
         </revision>
     </page>
