@@ -1,4 +1,5 @@
 #include "wiki_tokenizer.h"
+#include "wiki_token.h"
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
@@ -6,6 +7,7 @@
 #include <optional>
 #include <string>
 #include <string_view>
+#include <stack>
 
 // ----------------------------- helper tokenizer -----------------------------
 namespace {
@@ -13,8 +15,8 @@ namespace {
 class Delimiter {
 public:
     WikiTokenType type;
-    bool is_closing;
-    std::string_view tag_range;
+    std::optional<bool> is_closing; // nullopt if undirectional
+    std::string_view delim;
 };
 
 // advance while =val, not end, less than length many
@@ -39,7 +41,7 @@ Delimiter check_delimiter(std::string_view view) {
     WikiTokenType type = WikiTokenType::None;
 
     // default closing first
-    bool is_closing = true;
+    std::optional<bool> is_closing;
 
     switch (*it) {
         case '=':
@@ -51,8 +53,10 @@ Delimiter check_delimiter(std::string_view view) {
                 type = WikiTokenType::Section;
             }
             break;
+        case '\n':
+        case '\t':
         case ' ':
-            // word
+            // whitespace
             it++;
             type = WikiTokenType::Text;
             break;
@@ -64,6 +68,7 @@ Delimiter check_delimiter(std::string_view view) {
             assert(dist <= 3);
 
             // TODO: empty '''' will be break this
+            // so will '''''hi''' wassup'' where outer is italic, inner is bold
 
             // distinguish italic vs bold
             if (dist == 2) {
@@ -132,9 +137,26 @@ Delimiter check_delimiter(std::string_view view) {
             break;
 
         default:
+            // advance it
+            it++;
             break;
     }
     return Delimiter{type, is_closing, std::string_view{start, it}};
+}
+
+// returns whether this delimiter is closing
+//  (useful for undirectional delims like ==)
+bool should_close(const Delimiter &delim,
+                  const std::stack<Delimiter> &open_delims) {
+
+    // if directional, trust it
+    if (delim.is_closing.has_value()) {
+        return *delim.is_closing;
+    }
+
+    // else close if there is an open of the type
+    //  we assume non overlapping to make this check possible
+    return !open_delims.empty() && open_delims.top().type == delim.type;
 }
 
 } // namespace
@@ -145,14 +167,58 @@ void WikiTokenizer::tokenize(std::string_view text,
                              std::function<void(const Token &token)> fn) {
 
     // open tokens (assuming no overlap)
-    std::stack<WikiToken> tokens;
+    std::stack<Delimiter> open_delims;
 
-    for (auto it = text.begin(); it != text.end(); it++) {
+    auto word_begin = text.begin();
+
+    auto it = text.begin();
+    while (it != text.end()) {
         std::string_view view(it, text.end());
+        spdlog::debug("text=[{}]", view);
         Delimiter delim = check_delimiter(view);
 
-        // ignore
-        if (delim.type == WikiTokenType::None)
-            continue;
+        if (delim.type == WikiTokenType::Text) {
+            if (it != word_begin) {
+                // if not empty
+
+                // just collect word
+                WikiToken token{std::string_view(word_begin, it)};
+
+                // checkout this token
+                fn(token);
+            }
+            // next word starts outside
+            word_begin = delim.delim.end();
+        } else if (delim.type != WikiTokenType::None) {
+            // still process
+            if (should_close(delim, open_delims)) {
+                // is closing, ready to emit
+                assert(!open_delims.empty());
+
+                Delimiter open = open_delims.top();
+                open_delims.pop();
+
+                // better be same type
+                assert(open.type == delim.type);
+
+                // create token
+                WikiToken token{open.type, open.delim, delim.delim};
+
+                // checkout this token
+                fn(token);
+            } else {
+                // is opening
+                open_delims.push(delim);
+            }
+
+            // next word starts outside
+            word_begin = delim.delim.end();
+        }
+
+        // advance to end of tag
+        it = delim.delim.end();
     }
+
+    // should be closed
+    assert(open_delims.empty());
 }
