@@ -62,6 +62,7 @@ std::optional<XMLDocs> XMLDocs::create(const std::string &path, size_t n,
 }
 
 std::string_view XMLDocs::text(int64_t id) {
+    assert(id < int64_t(m_texts.size()));
     return m_texts[id];
 }
 

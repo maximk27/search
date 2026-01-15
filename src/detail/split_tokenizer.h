@@ -1,0 +1,51 @@
+#pragma once
+#include <array>
+#include <climits>
+#include <cstdint>
+#include <string>
+#include <functional>
+#include <string_view>
+#include "../api/token.h"
+#include "../api/tokenizer.h"
+
+class BasicToken : public Token {
+public:
+    std::string_view text() const override {
+        return data;
+    }
+
+    BasicToken(std::string_view data) : data(data) {
+    }
+
+    std::string_view data;
+};
+
+// tokenize on delimiters as the split
+class SplitTokenizer : public Tokenizer {
+public:
+    SplitTokenizer(const std::string &delimiters) {
+        for (uint8_t val : delimiters) {
+            m_delimiters[val] = true;
+        }
+    }
+
+    void tokenize(std::string_view text,
+                  std::function<void(const Token &token)> fn) override {
+        int l = 0;
+        for (size_t r = 0; r < text.size(); r++) {
+            uint8_t c = text[r];
+            if (m_delimiters[c]) {
+                // [l, r)
+                BasicToken token{
+                    std::string_view{text.begin() + l, text.begin() + r}};
+
+                fn(token);
+                l = r + 1;
+            }
+        }
+    }
+
+private:
+    // all false initially
+    std::array<bool, UINT8_MAX> m_delimiters{};
+};
