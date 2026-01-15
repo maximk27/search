@@ -13,7 +13,7 @@ namespace {
 class Delimiter {
 public:
     WikiTokenType type;
-    bool is_opening;
+    bool is_closing;
     std::string_view tag_range;
 };
 
@@ -37,7 +37,9 @@ Delimiter check_delimiter(std::string_view view) {
     auto it = start;
 
     WikiTokenType type = WikiTokenType::None;
-    bool is_open = false;
+
+    // default closing first
+    bool is_closing = true;
 
     switch (*it) {
         case '=':
@@ -61,6 +63,8 @@ Delimiter check_delimiter(std::string_view view) {
             size_t dist = it - start;
             assert(dist <= 3);
 
+            // TODO: empty '''' will be break this
+
             // distinguish italic vs bold
             if (dist == 2) {
                 type = WikiTokenType::Italic;
@@ -79,7 +83,7 @@ Delimiter check_delimiter(std::string_view view) {
             }
 
             // closing if </, else opening <
-            is_open = tag_start != "&gt/";
+            is_closing = tag_start == "&gt/";
 
             while (it < view.end()) {
                 std::string_view symbol(it, std::min(it + 3, view.end()));
@@ -99,7 +103,7 @@ Delimiter check_delimiter(std::string_view view) {
             it = advance_while(view, '[', 2);
             if (it - start == 2) {
                 type = WikiTokenType::Link;
-                is_open = true;
+                is_closing = false;
             }
             break;
         case '{':
@@ -107,7 +111,7 @@ Delimiter check_delimiter(std::string_view view) {
             it = advance_while(view, '{', 2);
             if (it - start == 2) {
                 type = WikiTokenType::Template;
-                is_open = true;
+                is_closing = false;
             }
             break;
         case ']':
@@ -115,7 +119,7 @@ Delimiter check_delimiter(std::string_view view) {
             it = advance_while(view, ']', 2);
             if (it - start == 2) {
                 type = WikiTokenType::Link;
-                is_open = false;
+                is_closing = true;
             }
             break;
         case '}':
@@ -123,14 +127,14 @@ Delimiter check_delimiter(std::string_view view) {
             it = advance_while(view, '}', 2);
             if (it - start == 2) {
                 type = WikiTokenType::Template;
-                is_open = false;
+                is_closing = true;
             }
             break;
 
         default:
             break;
     }
-    return Delimiter{type, is_open, std::string_view{start, it}};
+    return Delimiter{type, is_closing, std::string_view{start, it}};
 }
 
 } // namespace
@@ -146,5 +150,9 @@ void WikiTokenizer::tokenize(std::string_view text,
     for (auto it = text.begin(); it != text.end(); it++) {
         std::string_view view(it, text.end());
         Delimiter delim = check_delimiter(view);
+
+        // ignore
+        if (delim.type == WikiTokenType::None)
+            continue;
     }
 }

@@ -7,7 +7,7 @@
 
 // Wiki Token types
 enum class WikiTokenType {
-    None = 0, // impl detail, not registered
+    None = 0, // impl detail, not recognized token
     Text,     // <space>text<space>
     Section,  // ==text==
     Bold,     // '''text'''
