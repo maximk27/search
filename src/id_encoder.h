@@ -15,12 +15,16 @@ class IdEncoder {
 public:
     // encode, set if not exist, else return existing
     int64_t encode(const T &val);
+
+    // fetch existing encoding
+    int64_t fetch_encoding(const T &val) const;
+
     // decode requires that encoding exists
-    const T &decode(int64_t id);
+    const T &decode(int64_t id) const;
 
     // this has been encoded before
-    bool contains(const T &val);
-    bool contains(int64_t id);
+    bool contains(const T &val) const;
+    bool contains(int64_t id) const;
 
     // size
     size_t size() const;

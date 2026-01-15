@@ -1,7 +1,7 @@
 #include <spdlog/spdlog.h>
 #include "src/api/docs.h"
 #include "src/graph.h"
-#include "src/xml_docs.h"
+#include "src/detail/xml_docs.h"
 #include <iostream>
 
 int main(int argc, char *argv[]) {

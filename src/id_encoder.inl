@@ -23,7 +23,15 @@ int64_t IdEncoder<T>::encode(const T &val) {
 }
 
 template <typename T>
-const T &IdEncoder<T>::decode(int64_t id) {
+int64_t IdEncoder<T>::fetch_encoding(const T &val) const {
+    auto it = m_to_id.find(val);
+    if (it == m_to_id.end())
+        throw std::runtime_error("encoded item must exist");
+    return it->second;
+}
+
+template <typename T>
+const T &IdEncoder<T>::decode(int64_t id) const {
     // must contain
     if (!contains(id)) {
         throw std::runtime_error("must contain");
@@ -32,13 +40,13 @@ const T &IdEncoder<T>::decode(int64_t id) {
 }
 
 template <typename T>
-bool IdEncoder<T>::contains(const T &val) {
+bool IdEncoder<T>::contains(const T &val) const {
     auto it = m_to_id.find(val);
     return it != m_to_id.end();
 }
 
 template <typename T>
-bool IdEncoder<T>::contains(int64_t id) {
+bool IdEncoder<T>::contains(int64_t id) const {
     return id < size();
 }
 

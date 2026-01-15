@@ -3,7 +3,7 @@
 #include <boost/regex.hpp>
 #include <cassert>
 #include <string_view>
-#include "wiki_parser.h"
+#include "../wiki_parser.h"
 
 using namespace pugi;
 using namespace boost;
@@ -84,10 +84,10 @@ XMLDocs::XMLDocs(pugi::xml_document &doc, size_t n,
 
     m_texts.reserve(n);
 
-    size_t count = 0;
+    int64_t count = 0;
     for (xml_node node : first.children("page")) {
         // hit max
-        if (count == n)
+        if (count == int64_t(n))
             break;
 
         // get string information about page node
@@ -106,7 +106,10 @@ XMLDocs::XMLDocs(pugi::xml_document &doc, size_t n,
             continue;
 
         // register this page on this idx
-        encoder.encode(page_name);
+        int64_t id = encoder.encode(page_name);
+
+        // should be dense for xml_docs
+        assert(id == count);
 
         // add this entries data
         m_texts.emplace_back(std::move(page_text));

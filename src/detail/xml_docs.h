@@ -4,8 +4,8 @@
 #include <utility>
 #include <string>
 #include <cstdint>
-#include "id_encoder.h"
-#include "api/docs.h"
+#include "../id_encoder.h"
+#include "../api/docs.h"
 
 class XMLDocs : public Docs {
 public:

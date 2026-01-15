@@ -11,7 +11,7 @@
 
 class Graph {
 public:
-    Graph(Docs &docs, IdEncoder<std::string> &encoder);
+    Graph(Docs &docs, const IdEncoder<std::string> &encoder);
     double avg_outdeg() const;
 
 public:

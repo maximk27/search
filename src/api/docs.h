@@ -3,7 +3,7 @@
 #include <functional>
 #include <string_view>
 
-// api for doc collection
+// for interacting with text per document
 class Docs {
 public:
     // getters

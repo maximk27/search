@@ -14,7 +14,7 @@ using namespace pugi;
 // ---------------------------------- helper ----------------------------------
 namespace {
 
-std::vector<int64_t> parse_page_text(IdEncoder<std::string> &encoder,
+std::vector<int64_t> parse_page_text(const IdEncoder<std::string> &encoder,
                                      std::string_view text) {
     // catch all of form [[(link)|(text)]]
     // where |(text) is optional
@@ -52,7 +52,7 @@ std::vector<int64_t> parse_page_text(IdEncoder<std::string> &encoder,
             continue;
         }
 
-        int64_t link_id = encoder.encode(url_name);
+        int64_t link_id = encoder.fetch_encoding(url_name);
 
         spdlog::info("keeping_name={}", url_name);
         out_links.push_back(link_id);
@@ -63,7 +63,7 @@ std::vector<int64_t> parse_page_text(IdEncoder<std::string> &encoder,
 }; // namespace
 
 // ---------------------------------- public ----------------------------------
-Graph::Graph(Docs &docs, IdEncoder<std::string> &encoder) {
+Graph::Graph(Docs &docs, const IdEncoder<std::string> &encoder) {
     adjlist.resize(encoder.size());
     for (size_t id = 0; id < adjlist.size(); id++) {
         // parse links in this pages text

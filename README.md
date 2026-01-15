@@ -44,60 +44,9 @@ To run cli
 ./bin/cli [path_to_xml] [num_pages_to_process]
 ```
 
-### Notes
 
-#### Search
+### Todo + Ideas
+See [Workboard](https://trello.com/b/f1pLMycT/search) for progress and backlog of 
+ideas for features
 
-[Google Search overview](https://developers.google.com/search/docs/fundamentals/how-search-works)
-
-[Google Search docs](https://developers.google.com/search/docs)
-
-But mostly from the book "Information Retrieval: Implementing and Evaluating Search Engine"
-
-Building a query for the index
-- Identify entities. Eg: Statue of Liberty is all 1 entity. 
-- Scrub out meaningless stop words. Eg: Photograph "of" cat
-- Expand terms to synonyms. Eg: car dealership += auto dealership
-
-The index yields some large set of relevant and quality results
-
-Ranking the results:
-- Uniqueness
-- Relative importance
-- Location
-
-
-#### Wikipedia
-Subset of Wikipedia [dataset](https://dumps.wikimedia.org/enwiki/20251220/)
-> specifically enwiki-20251220-pages-meta-current1.xml-p1p41242.bz2 299.8 MB
-
-Documentation for [dumps](https://en.wikipedia.org/wiki/Wikipedia:Database_download#Database_schema)
-
-Schema [docs](https://www.mediawiki.org/wiki/Help:Export#Export_format)
-
-Example wikipedia [article](https://en.wikipedia.org/wiki/Anarchism)
-
-Wikipedia xml rules
-- page url is defined by redirect element if it exists, otherwise by title
-- page url \<space\> -> "_"
-- internal linkes are of the form \[\[LINK]] with \[\[link | text]] where text is displayed
-- links may be of the form \[\[namespace:link]] as well, we will ignore namespaced links
-- links may also have \[\[link\#section]] and for book keeping we will ignore section
-- files are of form \[\[file:name | text]]
-
-Extra rules we will ignore:
-- templates are of form \{\{type : parameters}} <- could be links
-- external url is of form \[link]
-
-
-
-### Todo
-- Handle non ascii chars
-- Parse wikipedia data graph
-- Basic cli
-- Page ranking
-
-### Extra Ideas
-- Allow namespaces and cluster them into a group
-- Web crawler 
-- Web Frontend, RPC backend
+Private for now
