@@ -28,13 +28,13 @@ void test(std::string path) {
 }
 
 TEST(tokenizer, basic) {
-    spdlog::set_level(spdlog::level::debug);
+    spdlog::set_level(spdlog::level::info);
     std::string path = "../data_test/tokenizer_basic.xml";
     test(path);
 }
 
 TEST(tokenizer, nested) {
-    spdlog::set_level(spdlog::level::debug);
+    spdlog::set_level(spdlog::level::info);
     std::string path = "../data_test/tokenizer_nested.xml";
     test(path);
 }

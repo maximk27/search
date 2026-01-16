@@ -22,6 +22,7 @@ inline std::string to_string(WikiTokenType type) {
         "None", "Text", "Section", "Bold", "Italic", "Tag", "Link", "Template"};
     return std::string(names[int(type)]);
 }
+
 // -------------------------------- wiki token --------------------------------
 // Token returned from wiki
 class WikiToken : public Token {
