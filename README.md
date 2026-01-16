@@ -48,6 +48,14 @@ To run test suite (assuming in build/)
 ctest
 ```
 
+## Dataset
+
+Stopwords [datastet](https://gist.github.com/larsyencken/1440509)
+
+Subset of Wikipedia [dataset](https://dumps.wikimedia.org/enwiki/20251220/)
+> specifically enwiki-20251220-pages-meta-current1.xml-p1p41242.bz2 299.8 MB
+
+
 
 ### Todo + Ideas
 See [Workboard](https://trello.com/b/f1pLMycT/search) for progress and backlog of 

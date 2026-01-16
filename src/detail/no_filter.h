@@ -5,8 +5,8 @@
 // naive filter nothing at all
 class NoFilter : public Filter {
 public:
-    void apply(std::string_view token,
-               std::function<void(std::string_view)> fn) override {
+    virtual void apply(const Token &token,
+                       std::function<void(const Token &)> fn) {
         fn(token);
     }
 };
