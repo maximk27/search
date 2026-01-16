@@ -1,6 +1,7 @@
 #include <cstddef>
 #include <gtest/gtest.h>
 #include <iostream>
+#include <print>
 #include <string>
 #include "../src/id_encoder.h"
 #include "../src/detail/xml_docs.h"
@@ -22,8 +23,8 @@ void test(std::string path) {
     WikiTokenizer tokenizer;
     tokenizer.tokenize(docs->text(0), [](const Token &tok) {
         const WikiToken &token = static_cast<const WikiToken &>(tok);
-        spdlog::info("type=[{}], content=[{}]", to_string(token.type),
-                     token.text());
+        std::print("type=[{}], content=[{}]", to_string(token.type),
+                   token.text());
     });
 }
 
