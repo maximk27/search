@@ -33,7 +33,7 @@ public:
                   std::function<void(const Token &token)> fn) override {
         int l = 0;
         for (size_t r = 0; r < text.size(); r++) {
-            uint8_t c = text[r];
+            char c = text[r];
             if (m_delimiters[c]) {
                 // [l, r)
                 BasicToken token{
@@ -47,5 +47,5 @@ public:
 
 private:
     // all false initially
-    std::array<bool, UINT8_MAX> m_delimiters{};
+    std::array<bool, CHAR_MAX> m_delimiters{};
 };

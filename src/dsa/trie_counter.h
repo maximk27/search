@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <climits>
 #include <cstdint>
 #include <array>
 #include <memory>
@@ -52,7 +53,7 @@ private:
         }
 
         int freq = 0;
-        std::array<std::unique_ptr<Trie>, UINT8_MAX> nexts;
+        std::array<std::unique_ptr<Trie>, CHAR_MAX> nexts;
     };
 
     void traverse_help(const Trie *node, std::ostringstream &os,

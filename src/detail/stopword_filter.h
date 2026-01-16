@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include <string_view>
+#include "../dsa/trie_counter.h"
 
 class StopwordFilter : public Filter {
 public:
@@ -17,4 +18,5 @@ private:
     StopwordFilter(std::ifstream &ifs);
 
 private:
+    TrieCounter m_set;
 };
