@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <cassert>
 #include <cstdint>
 #include <array>
@@ -30,7 +31,12 @@ public:
             node = next.get();
         }
         // track word on char we end on
-        node->count++;
+        node->freq++;
+
+        // adjust counters
+        m_count++;
+        if (node->freq == 1)
+            m_size++;
     }
 
     void erase_one(std::string_view s) {
@@ -44,26 +50,36 @@ public:
             // move next
             node = node->nexts[c].get();
         }
+        node->freq--;
 
-        // st[i] is prev before next into s[i]
+        // adjust counts
+        m_count--;
+
+        // done
+        if (node->freq > 0)
+            return;
+
+        // can prune this branch
+        m_size--;
+
+        // st[i] is prev trie that goes next with s[i]
         assert(st.size() == s.size());
 
         // process nodes from back first
         auto it = s.rbegin();
         while (!st.empty()) {
-            assert(it != s.rend());
             Trie *top = st.top();
             st.pop();
 
+            // reset the next
             uint8_t c = *it;
+            auto &next = top->nexts[c];
+            next.reset();
 
-            // decrement
-            std::unique_ptr<Trie> &next = top->nexts[c];
-            next->count--;
-
-            // erase
-            if (next->count == 0) {
-                next.reset();
+            // if any still valid, then stop pruning
+            if (std::any_of(top->nexts.begin(), top->nexts.end(),
+                            [](const auto &node) { return node != nullptr; })) {
+                break;
             }
 
             it++;
@@ -73,7 +89,7 @@ public:
     void erase_all(std::string_view s) {
     }
 
-    int count(std::string_view s) {
+    int freq(std::string_view s) {
         Trie *node = &m_root;
         for (uint8_t c : s) {
             std::unique_ptr<Trie> &next = node->nexts[c];
@@ -85,23 +101,25 @@ public:
             node = next.get();
         }
         // checkout word count on char we end on
-        return node->count;
+        return node->freq;
     }
 
     // total unique
     size_t size() const {
     }
 
-    // sum count including duplicate
-    size_t sum() const {
+    // count including duplicate
+    size_t count() const {
     }
 
 private:
     struct Trie {
-        int count = 0;
+        int freq = 0;
         std::array<std::unique_ptr<Trie>, UINT8_MAX> nexts;
     };
 
 private:
     Trie m_root;
+    size_t m_size = 0;
+    size_t m_count = 0;
 };
