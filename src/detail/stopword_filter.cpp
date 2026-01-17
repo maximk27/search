@@ -4,8 +4,8 @@
 #include <string_view>
 
 // ---------------------------------- public ----------------------------------
-std::optional<StopwordFilter> StopwordFilter::create(const std::string &path) {
-    std::ifstream ifs(path);
+std::optional<StopwordFilter> StopwordFilter::create(std::string_view path) {
+    std::ifstream ifs{std::string{path}};
     if (!ifs.is_open()) {
         return std::nullopt;
     }
@@ -14,6 +14,9 @@ std::optional<StopwordFilter> StopwordFilter::create(const std::string &path) {
 
 void StopwordFilter::apply(const Token &token,
                            std::function<void(const Token &)> fn) {
+    // TODO: make this another filter as well?
+    //  need to change the token interface to support altering the text()
+
     // force tolower for the comparison
     std::string s(token.text());
     std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c) {
@@ -21,7 +24,8 @@ void StopwordFilter::apply(const Token &token,
     });
 
     // check if part of skip list
-    if (m_set.freq(token.text())) {
+    if (m_set.freq(s)) {
+        spdlog::debug("stopword filter skip s=[{}]", token.text());
         return;
     }
 

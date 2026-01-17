@@ -18,6 +18,7 @@ int main(int argc, char *argv[]) {
     auto docs = XMLDocs::create(path, count, encoder);
 
     if (!docs) {
+        spdlog::error("cannot open path[{}]", path);
         exit(1);
     }
 

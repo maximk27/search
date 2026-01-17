@@ -7,18 +7,7 @@
 #include <string_view>
 #include "../api/token.h"
 #include "../api/tokenizer.h"
-
-class BasicToken : public Token {
-public:
-    std::string_view text() const override {
-        return data;
-    }
-
-    BasicToken(std::string_view data) : data(data) {
-    }
-
-    std::string_view data;
-};
+#include "basic_token.h"
 
 // tokenize on delimiters as the split
 class SplitTokenizer : public Tokenizer {

@@ -8,7 +8,7 @@
 
 class StopwordFilter : public Filter {
 public:
-    static std::optional<StopwordFilter> create(const std::string &path);
+    static std::optional<StopwordFilter> create(std::string_view path);
 
     void apply(const Token &token, std::function<void(const Token &)> fn);
 

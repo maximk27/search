@@ -54,7 +54,6 @@ std::optional<XMLDocs> XMLDocs::create(const std::string &path, size_t n,
     xml_document input;
     xml_parse_result res = input.load_file(path.data());
     if (!res) {
-        spdlog::error("Error reading file: {}", res.description());
         return std::nullopt;
     }
 

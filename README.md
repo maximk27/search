@@ -1,6 +1,6 @@
 ###  Search
 
-A small website searcher over a subset of Wikipedia pages
+A small document searcher over a subset of Wikipedia pages
 
 > [!NOTE]
 > I am focusing on the algorithms used in search, not necessarily the problem of extreme scale, 
